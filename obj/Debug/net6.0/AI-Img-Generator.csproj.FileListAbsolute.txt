@@ -1,0 +1,6 @@
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.csproj.AssemblyReference.cache
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.AssemblyInfoInputs.cache
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.AssemblyInfo.cs
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.csproj.CoreCompileInputs.cache
+/workspaces/AI-Img-Generator/obj/Debug/net6.0/AI-Img-Generator.MvcApplicationPartsAssemblyInfo.cache

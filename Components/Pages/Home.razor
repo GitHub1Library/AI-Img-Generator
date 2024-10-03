@@ -1,0 +1,138 @@
+﻿@page "/" 
+@page "/home"
+@using Azure;
+@using Azure.AI.Vision;
+@using Azure.AI.Vision.ImageAnalysis;
+@using Azure.AI.OpenAI;
+@using System.Net.Http; 
+@using System.Net.Http.Headers;
+@using System.Text;
+@using Newtonsoft.Json.Linq;
+@using System.Threading.Tasks;
+
+<h3>Azure Vision Example</h3> 
+
+<p>Write a URL or Prompt:</p>
+<textarea @bind="input" rows="1" cols="40" placeholder="Type here"></textarea>  
+<button @onclick="Analyze">Analyze Img</button>
+<img src="@input" alt="image">
+<p>@caption</p> <!-- This paragraph will display the caption -->
+
+@code
+{
+    string input = ""; // Variable to hold the image URL or prompt input from the user
+    string caption = ""; // Variable to store the result caption
+    
+    /// <summary>
+    /// Analyzes the image using the Azure Vision API and updates the caption based on the results.
+    /// </summary>
+    async Task Analyze()
+    {
+        try
+        {
+            // Retrieve the Azure Vision API endpoint and key from environment variables
+            string endpoint = Environment.GetEnvironmentVariable("VISION_ENDPOINT");
+            string key = Environment.GetEnvironmentVariable("VISION_KEY");
+
+            // Ensure the endpoint and key are not null or empty
+            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key))
+            {
+                caption = "Error: Missing Azure Vision API credentials."; // Set error message
+                return; // Exit the method if credentials are missing
+            }
+
+            // Call the AnalyzeImage method and get the JSON result
+            string result = await AnalyzeImage(input, key, endpoint);
+            var json = JObject.Parse(result); // Parse the JSON response
+
+            // Extract and display the caption from the response
+            if (json["description"]?["captions"]?.HasValues == true)
+            {
+                caption = $"Caption: {json["description"]["captions"][0]["text"]}, Confidence: {json["description"]["captions"][0]["confidence"]}";
+            }
+            else
+            {
+                caption = "No caption detected."; // Message when no caption is found
+            }
+
+            // Optional: Handle text recognition if necessary
+            if (json["read"]?["blocks"]?.HasValues == true)
+            {
+                caption += "\nText detected in the image:\n"; // Add section for detected text
+                foreach (var block in json["read"]["blocks"]) // Iterate through text blocks
+                {
+                    foreach (var line in block["lines"]) // Iterate through lines in each block
+                    {
+                        caption += $"Line: {line["text"]}\n"; // Append detected line to caption
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Capture and display any errors encountered during analysis
+            caption = $"Error analyzing image: {ex.Message}"; // Set error message
+        }
+    }
+
+    /// <summary>
+    /// Generates an image using the Azure OpenAI service.
+    /// </summary>
+    async Task GenerateImage()
+    {
+        try
+        {
+            // Retrieve the Azure OpenAI endpoint and key from environment variables
+            string endpoint = Environment.GetEnvironmentVariable("VISION_ENDPOINT");
+            string key = Environment.GetEnvironmentVariable("VISION_KEY"); // Assuming you want to use VISION_KEY for OpenAI as well
+
+            // Ensure the endpoint and key are not null or empty
+            // Ensure the endpoint and key are not null or empty
+        if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key))
+        {
+            caption = "Error: Missing Azure OpenAI API credentials.";
+            return; 
+        }
+
+        // Create an instance of the Azure OpenAI Client
+        var client = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+
+        // Call the GenerateImageAsync method
+        var response = await client.GetImageClient("dalle-3").GenerateImageAsync(input, new ImageGenerationOptions()
+        {
+            Size = GeneratedImageSize.W1024xH1024
+        });
+
+        // Output the generated image URI to the caption variable
+        caption = response.Value.ImageUri; 
+    }
+    catch (Exception ex)
+    {
+        caption = $"Error generating image: {ex.Message}";
+    }
+    }
+
+    /// <param name="imageUrl">The URL of the image to analyze.</param>
+    /// <param name="subscriptionKey">The subscription key for Azure Vision API.</param>
+    /// <param name="endpoint">The endpoint URL for Azure Vision API.</param>
+    /// <returns>A task representing the asynchronous operation, containing the JSON response.</returns>
+    static async Task<string> AnalyzeImage(string imageUrl, string subscriptionKey, string endpoint)
+    {
+        // Create a new HttpClient to send the request
+        using (HttpClient client = new HttpClient())
+        {
+            // Add the subscription key to the request headers
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
+
+            // Construct the URI for the analyze API request
+            string uri = $"{endpoint}/vision/v3.2/analyze?visualFeatures=Description";
+            
+            // Prepare the JSON content with the image URL
+            var jsonContent = new StringContent($"{{\"url\":\"{imageUrl}\"}}", Encoding.UTF8, "application/json");
+
+            // Send the POST request and retrieve the response
+            HttpResponseMessage response = await client.PostAsync(uri, jsonContent);
+            return await response.Content.ReadAsStringAsync(); // Return the response content as a string
+        }
+    }
+}

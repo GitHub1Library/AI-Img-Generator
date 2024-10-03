@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "/workspaces/AI-Img-Generator/obj/Debug/net8.0/scopedcss/projectbundle/AI-Img-Generator.bundle.scp.css",
+      "PackagePath": "staticwebassets/AI-Img-Generator.bundle.scp.css"
+    },
+    {
+      "Id": "/workspaces/AI-Img-Generator/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/workspaces/AI-Img-Generator/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/workspaces/AI-Img-Generator/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/workspaces/AI-Img-Generator/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.AI-Img-Generator.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.AI-Img-Generator.props",
+      "PackagePath": "build\\AI-Img-Generator.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.AI-Img-Generator.props",
+      "PackagePath": "buildMultiTargeting\\AI-Img-Generator.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.AI-Img-Generator.props",
+      "PackagePath": "buildTransitive\\AI-Img-Generator.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
